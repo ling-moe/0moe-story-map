@@ -1,0 +1,22 @@
+.issue-input {
+  height: 100%;
+  margin: 2px 1px;
+  padding-left: 10px;
+  font-size: 26px;
+}
+
+.issue-input mat-icon:last-child {
+  display: none;
+}
+
+.issue-input:hover {
+  box-shadow: 0 0 5px 1px #6670ff;
+
+  mat-icon {
+    display: inline-block;
+  }
+}
+.e-center {
+  line-height: 40px;
+  vertical-align: top;
+}
