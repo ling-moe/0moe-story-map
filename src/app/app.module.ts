@@ -15,13 +15,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatMenuModule } from '@angular/material/menu';
 import {MatSelectModule} from '@angular/material/select';
 import { InlineEditComponent } from './inline-edit/inline-edit.component';
+import { FeatureAreaComponent } from './feature-area/feature-area.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     FeatureCardComponent,
-    InlineEditComponent
+    InlineEditComponent,
+    FeatureAreaComponent
   ],
   imports: [
     BrowserModule,

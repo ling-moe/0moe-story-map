@@ -55,8 +55,8 @@ export class AppComponent implements OnInit {
     return rowSpan;
   }
 
-  addIssue(type: 'STORY' | 'FEATURE' | 'TASK', value: string, row: number, col: number): void {
-    this.storyMap.featureList[row][col].push({ content: value, type});
+  addIssue(issue: Issue, row: number, col: number): void {
+    this.storyMap.featureList[row][col].push(issue);
   }
 
   addVersion(version: string){
@@ -95,22 +95,7 @@ export class AppComponent implements OnInit {
     // })
   }
 
-  drop(event: CdkDragDrop<Issue[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
-  }
+
 
   add() {
     // add 1 to the sum

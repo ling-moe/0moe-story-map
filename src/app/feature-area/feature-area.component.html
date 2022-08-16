@@ -1,0 +1,42 @@
+<div>
+  <div
+    cdkDropList
+    [cdkDropListData]="featureList"
+    class="example-list"
+    (cdkDropListDropped)="drop($event)">
+    <feature-card [content]="item.content" [type]="item.type" *ngFor="let item of featureList"
+    cdkDrag>{{item}}</feature-card>
+  </div>
+  <div style="display: flex;">
+  <mat-form-field appearance="fill" style="width: 60px;">
+    <mat-select value="STORY" #issueType>
+      <mat-select-trigger>
+        <ng-container mat-card-avatar [ngSwitch]="issueType.value">
+          <mat-icon *ngSwitchCase="'STORY'" class="green" style="height: 38px;" aria-hidden="false" aria-label="故事" >bookmark</mat-icon>
+          <mat-icon *ngSwitchCase="'FEATURE'" class="purple" style="height: 38px;" aria-hidden="false" aria-label="任务" >bolt</mat-icon>
+          <mat-icon *ngSwitchCase="'TASK'" class="blue" style="height: 38px;" aria-hidden="false" aria-label="故障" >task</mat-icon>
+        </ng-container>
+      </mat-select-trigger>
+      <mat-option value="STORY">
+        <mat-icon class="green" aria-hidden="false" aria-label="故事" >bookmark</mat-icon>
+        <span>故事</span>
+      </mat-option>
+      <mat-option value="FEATURE">
+        <mat-icon class="purple" aria-hidden="false" aria-label="特性" >bolt</mat-icon>
+        <span>特性</span>
+      </mat-option>
+      <mat-option value="TASK">
+        <mat-icon class="blue" aria-hidden="false" aria-label="任务" >task</mat-icon>
+        <span>任务</span>
+        </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="example-form-field" appearance="fill">
+    <mat-label>在这里输入……</mat-label>
+    <input matInput type="text" autocomplete="off" #issueInput>
+    <button matSuffix mat-icon-button (click)="emit(issueType.value, issueInput.value)" >
+      <mat-icon>input</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
+</div>
