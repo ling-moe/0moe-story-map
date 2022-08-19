@@ -16,6 +16,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import {MatSelectModule} from '@angular/material/select';
 import { InlineEditComponent } from './inline-edit/inline-edit.component';
 import { FeatureAreaComponent } from './feature-area/feature-area.component';
+import {MatTableModule} from '@angular/material/table';
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 
 
 @NgModule({
@@ -38,6 +41,8 @@ import { FeatureAreaComponent } from './feature-area/feature-area.component';
     MatFormFieldModule,
     MatMenuModule,
     MatSelectModule,
+    MatTableModule,
+    FlexLayoutModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

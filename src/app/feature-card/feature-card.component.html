@@ -5,7 +5,7 @@
   [class.feature]="type === 'FEATURE'"
 >
     <div *ngIf="editFlag" style="display: flex;">
-      <mat-form-field appearance="fill" style="width: 60px;">
+      <mat-form-field appearance="fill" style="width: 56px;">
         <mat-select [(ngModel)]="type" #issueType>
           <mat-select-trigger>
             <ng-container [ngSwitch]="issueType.value">
@@ -28,7 +28,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" style="width: 100%;">
         <mat-label>在这里输入……</mat-label>
         <input matInput type="text" autocomplete="off" [(ngModel)]="content">
         <button matSuffix mat-icon-button (click)="toggle()" >
@@ -45,10 +45,11 @@
       <div class="truncate-text e-center">
         {{ content }}
       </div>
+      <span fxFlex></span>
     <button mat-icon-button (click)="toggle()" style="vertical-align: top;">
       <mat-icon>edit</mat-icon>
     </button>
   <span>
-    {{person}}
+    {{ person }}
   </span>
 </div>

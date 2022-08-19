@@ -38,8 +38,8 @@ export class FeatureAreaComponent implements OnInit {
     }
   }
 
-  emit(type: 'STORY' | 'FEATURE' | 'TASK', content: string){
-    this.issueCreate.emit({type, content})
+  addIssue(type: 'STORY' | 'FEATURE' | 'TASK', content: string){
+    this.featureList.push({type, content});
   }
 
 }

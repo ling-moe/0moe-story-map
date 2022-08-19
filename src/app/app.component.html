@@ -12,39 +12,36 @@
   (cdkDropListDropped)="drop($event)">
   <div class="example-box" [cdkDragData]="item" *ngFor="let item of timePeriods" cdkDrag>{{item}}</div>
 </div> -->
-
+<mat-form-field appearance="fill">
+  <mat-label>添加版本</mat-label>
+  <input matInput type="text" #version>
+  <button  matSuffix mat-icon-button aria-label="Clear" (click)="addVersion(version.value)">
+    <mat-icon>done</mat-icon>
+  </button>
+</mat-form-field>
+<br>
+<mat-form-field appearance="fill">
+  <mat-label>添加功能</mat-label>
+  <input matInput type="text" #function>
+  <button  matSuffix mat-icon-button aria-label="Clear" (click)="addFunction(function.value)">
+    <mat-icon>done</mat-icon>
+  </button>
+</mat-form-field>
 <div style="height: 100%" cdkDropListGroup>
-  <mat-grid-list style="height: 100%" [cols]="storyMap.functionColList.length + 1" rowHeight="70px">
-    <ng-container >
-      <mat-grid-tile rowspan="2">
+    <div style="display: flex;">
+      <div class="stand-width">
         <inline-edit [content]="storyMap.name"></inline-edit>
-      </mat-grid-tile>
-      <mat-grid-tile rowspan="2" *ngFor="let functionCol of storyMap.functionColList">
+      </div>
+      <div class="stand-width" *ngFor="let functionCol of storyMap.functionColList">
         <inline-edit [content]="functionCol"></inline-edit>
-      </mat-grid-tile>
-    </ng-container>
-    <ng-container *ngFor="let versionRow of storyMap.versionRowList; let row = index">
-      <mat-grid-tile [rowspan]="getFeatureRowSpan(row)">
-        <inline-edit [content]="versionRow"></inline-edit>
-      </mat-grid-tile>
-      <mat-grid-tile [style.background]="'#eeeeee'" [rowspan]="getFeatureRowSpan(row)" *ngFor="let feature of storyMap.functionColList; let col = index">
+      </div>
+    </div>
+    <div style="display: flex;" *ngFor="let versionRow of storyMap.versionRowList; let row = index">
+      <div class="stand-width" >
+        <inline-edit style="margin: auto 0;" [content]="versionRow"></inline-edit>
+      </div>
+      <div class="stand-width" [style.background]="'#eeeeee'" *ngFor="let feature of storyMap.functionColList; let col = index">
         <feature-area [featureList]="getfeatureList(row, col)" (issueCreate)="addIssue($event, row, col)" ></feature-area>
-      </mat-grid-tile>
-    </ng-container>
-
-  </mat-grid-list>
-  <mat-form-field class="example-form-field" appearance="fill">
-    <mat-label>添加版本</mat-label>
-    <input matInput type="text" #version>
-    <button  matSuffix mat-icon-button aria-label="Clear" (click)="addVersion(version.value)">
-      <mat-icon>done</mat-icon>
-    </button>
-  </mat-form-field>
-  <mat-form-field class="example-form-field" appearance="fill">
-    <mat-label>添加功能</mat-label>
-    <input matInput type="text" #function>
-    <button  matSuffix mat-icon-button aria-label="Clear" (click)="addFunction(function.value)">
-      <mat-icon>done</mat-icon>
-    </button>
-  </mat-form-field>
+      </div>
+    </div>
 </div>

@@ -8,8 +8,9 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Issue, StoryMap } from './story-map.type';
+import { FunctionArea, Issue, StoryMap } from './story-map.type';
 import { FeatureCardComponent } from './feature-card/feature-card.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 function b64Encode(str: string) {
   return btoa(encodeURIComponent(str));
@@ -24,6 +25,9 @@ function b64Decode(str: string) {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+
+  dataSource!: MatTableDataSource<FunctionArea>;
+
   storyMap: StoryMap = {
     name: '故事地图',
     functionColList: ['登陆模块', '订单模块', '消息模块', '订单模块', '消息模块'],
@@ -51,7 +55,7 @@ export class AppComponent implements OnInit {
 
   getFeatureRowSpan(row: number): number{
     let rowSpan = Math.max(...(this.storyMap.featureList[row]? this.storyMap.featureList[row] : [[]]).map(col => col.length));
-    rowSpan = rowSpan > 0 ? rowSpan + 1 : 2;
+    rowSpan = rowSpan > 0 ? rowSpan + 4 : 6;
     return rowSpan;
   }
 
@@ -71,16 +75,6 @@ export class AppComponent implements OnInit {
   answer!: RTCPeerConnection;
   question!: RTCPeerConnection;
   yarray!: YArray<number>;
-
-  todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
-
-  done = ['Get up', 'Brush teeth', 'Take a shower', 'Check e-mail', 'Walk dog'];
-
-  todo1 = ['红烧', '鸡翅', '我', '最爱吃'];
-
-  done1 = ['小强', '你', '死的', '好惨', '啊'];
-
-  timePeriods = ['Bronze age', 'Iron age'];
 
   ngOnInit(): void {
     // const ydoc = new Doc()

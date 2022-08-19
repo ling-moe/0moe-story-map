@@ -1,11 +1,10 @@
-<div>
   <div
     cdkDropList
     [cdkDropListData]="featureList"
     class="example-list"
-    (cdkDropListDropped)="drop($event)">
-    <feature-card [content]="item.content" [type]="item.type" *ngFor="let item of featureList"
-    cdkDrag>{{item}}</feature-card>
+    (cdkDropListDropped)="drop($event)"
+    style="min-height: 200px;">
+    <feature-card [content]="item.content" [type]="item.type" *ngFor="let item of featureList" cdkDrag>{{item}}</feature-card>
   </div>
   <div style="display: flex;">
   <mat-form-field appearance="fill" style="width: 60px;">
@@ -34,9 +33,8 @@
   <mat-form-field class="example-form-field" appearance="fill">
     <mat-label>在这里输入……</mat-label>
     <input matInput type="text" autocomplete="off" #issueInput>
-    <button matSuffix mat-icon-button (click)="emit(issueType.value, issueInput.value)" >
+    <button matSuffix mat-icon-button (click)="addIssue(issueType.value, issueInput.value)" >
       <mat-icon>input</mat-icon>
     </button>
   </mat-form-field>
-</div>
 </div>

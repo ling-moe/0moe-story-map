@@ -10,17 +10,11 @@ export class FeatureCardComponent implements OnInit {
 
   @Input()
   content!: string;
-
   @Input()
   type!: string;
-
   @Input()
   person!: string;
-  @Input()
   editFlag = false;
-  @Output()
-  editFlagChange: EventEmitter<boolean> = new EventEmitter(this.editFlag);
-
 
   constructor() { }
 
@@ -29,6 +23,6 @@ export class FeatureCardComponent implements OnInit {
 
   toggle() {
     this.editFlag = !this.editFlag;
-    this.editFlagChange.emit(this.editFlag);
+    console.log(this);
   }
 }

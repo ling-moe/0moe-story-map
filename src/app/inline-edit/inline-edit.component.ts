@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'inline-edit',
@@ -13,11 +13,19 @@ export class InlineEditComponent implements OnInit {
 
   editFlag = false;
 
+  @Output()
+  testEvent = new EventEmitter<string>();
+
   constructor() { }
 
   ngOnInit(): void {
   }
   toggle() {
     this.editFlag = !this.editFlag;
+    this.testEvent.emit(this.content);
+  }
+
+  log(e: any){
+    return JSON.stringify(e);
   }
 }

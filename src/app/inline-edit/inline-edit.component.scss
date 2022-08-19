@@ -1,8 +1,9 @@
 .issue-input {
-  height: 100%;
   margin: 2px 1px;
   padding-left: 10px;
   font-size: 26px;
+  align-items: center;
+  height: 71px;
 }
 
 .issue-input mat-icon:last-child {
@@ -16,7 +17,17 @@
     display: inline-block;
   }
 }
+
 .e-center {
   line-height: 40px;
   vertical-align: top;
 }
+
+:host {
+  text-align: center;
+}
+
+mat-form-field{
+  width: 100%;
+}
+

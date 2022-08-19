@@ -1,5 +1,5 @@
 <div *ngIf="editFlag">
-  <mat-form-field class="example-form-field" appearance="fill" style="width: 140px;">
+  <mat-form-field appearance="fill">
     <mat-label>在这里输入……</mat-label>
     <input matInput type="text" autocomplete="off" [(ngModel)]="content">
     <button matSuffix mat-icon-button (click)="toggle()" >
@@ -8,8 +8,8 @@
   </mat-form-field>
 </div>
 <div class="issue-input" *ngIf="!editFlag">
-  <span>{{ content }}</span>
+  <span fxFlex>{{ content }}</span>
   <button mat-icon-button (click)="toggle()">
-    <mat-icon>edit</mat-icon>
+    <mat-icon style="font-size: 26px;">edit</mat-icon>
   </button>
 </div>

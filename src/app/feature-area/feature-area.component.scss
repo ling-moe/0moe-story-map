@@ -1,8 +1,7 @@
 .example-list {
-  border: solid 1px #ccc;
   min-height: 52px;
+  height: calc(100% - 71px);
   background: white;
-  border-radius: 4px;
   overflow: hidden;
   display: block;
 }
