@@ -1,0 +1,63 @@
+@use '@angular/material' as mat;
+
+.card-container {
+  border-top-width: 3px;
+  border-top-style: solid;
+  border-radius: 0.2rem;
+  width: 100%;
+
+  &.story {
+    border-top-color: #4caf50;
+  }
+
+  &.task {
+    border-top-color: #66ccff;
+  }
+
+  &.feature {
+    border-top-color: #c266ff;
+  }
+}
+
+.example-list.cdk-drop-list-dragging :host:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+:host {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  cursor: move;
+  height: 70px;
+  margin-bottom: 6px;
+}
+
+.truncate-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 200px;
+}
+
+.issue-input {
+  height: 100%;
+  margin: 2px 1px;
+}
+
+.issue-input mat-icon:last-child {
+  display: none;
+}
+
+.issue-input:hover {
+  box-shadow: 0 0 5px 1px #6670ff;
+
+  mat-icon {
+    display: inline-block;
+  }
+}
+
+.e-center {
+  line-height: 40px;
+  vertical-align: top;
+}

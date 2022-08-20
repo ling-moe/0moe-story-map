@@ -1,0 +1,55 @@
+<div
+  class="card-container"
+  [class.story]="type === 'STORY'"
+  [class.task]="type === 'TASK'"
+  [class.feature]="type === 'FEATURE'"
+>
+    <div *ngIf="editFlag" style="display: flex;">
+      <mat-form-field appearance="fill" style="width: 56px;">
+        <mat-select [(ngModel)]="type" #issueType>
+          <mat-select-trigger>
+            <ng-container [ngSwitch]="issueType.value">
+              <mat-icon *ngSwitchCase="'STORY'" class="green" style="height: 38px;" aria-hidden="false" aria-label="故事" >bookmark</mat-icon>
+              <mat-icon *ngSwitchCase="'FEATURE'" class="purple" style="height: 38px;" aria-hidden="false" aria-label="任务" >bolt</mat-icon>
+              <mat-icon *ngSwitchCase="'TASK'" class="blue" style="height: 38px;" aria-hidden="false" aria-label="故障" >task</mat-icon>
+            </ng-container>
+          </mat-select-trigger>
+          <mat-option value="STORY">
+            <mat-icon class="green" aria-hidden="false" aria-label="故事" >bookmark</mat-icon>
+            <span>故事</span>
+          </mat-option>
+          <mat-option value="FEATURE">
+            <mat-icon class="purple" aria-hidden="false" aria-label="特性" >bolt</mat-icon>
+            <span>特性</span>
+          </mat-option>
+          <mat-option value="TASK">
+            <mat-icon class="blue" aria-hidden="false" aria-label="任务" >task</mat-icon>
+            <span>任务</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+        <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>在这里输入……</mat-label>
+        <input matInput type="text" autocomplete="off" [(ngModel)]="content">
+        <button matSuffix mat-icon-button (click)="toggle()" >
+          <mat-icon>done</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    <div class="issue-input" *ngIf="!editFlag">
+      <ng-container mat-card-avatar [ngSwitch]="type">
+        <mat-icon *ngSwitchCase="'STORY'" class="green e-center" aria-hidden="false" aria-label="故事" >bookmark</mat-icon>
+        <mat-icon *ngSwitchCase="'FEATURE'" class="purple e-center" aria-hidden="false" aria-label="特性" >bolt</mat-icon>
+        <mat-icon *ngSwitchCase="'TASK'" class="blue e-center" aria-hidden="false" aria-label="任务" >task</mat-icon>
+      </ng-container>
+      <div class="truncate-text e-center">
+        {{ content }}
+      </div>
+      <span fxFlex></span>
+    <button mat-icon-button (click)="toggle()" style="vertical-align: top;">
+      <mat-icon>edit</mat-icon>
+    </button>
+  <span>
+    {{ person }}
+  </span>
+</div>
