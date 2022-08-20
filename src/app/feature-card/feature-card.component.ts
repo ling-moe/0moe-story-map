@@ -1,3 +1,4 @@
+import { Issue } from './../story-map.type';
 import { ChangeDetectionStrategy, Component, OnInit, Input, ElementRef, Output, EventEmitter } from '@angular/core';
 
 @Component({
@@ -11,10 +12,13 @@ export class FeatureCardComponent implements OnInit {
   @Input()
   content!: string;
   @Input()
-  type!: string;
+  type!: 'STORY' | 'FEATURE' | 'TASK';
   @Input()
   person!: string;
   editFlag = false;
+
+  @Output()
+  issueModify = new EventEmitter<Issue>();
 
   constructor() { }
 
@@ -23,6 +27,6 @@ export class FeatureCardComponent implements OnInit {
 
   toggle() {
     this.editFlag = !this.editFlag;
-    console.log(this);
+    this.issueModify.emit({content: this.content, type: this.type});
   }
 }

@@ -14,7 +14,7 @@ export class InlineEditComponent implements OnInit {
   editFlag = false;
 
   @Output()
-  testEvent = new EventEmitter<string>();
+  contentChange = new EventEmitter<string>();
 
   constructor() { }
 
@@ -22,10 +22,8 @@ export class InlineEditComponent implements OnInit {
   }
   toggle() {
     this.editFlag = !this.editFlag;
-    this.testEvent.emit(this.content);
-  }
-
-  log(e: any){
-    return JSON.stringify(e);
+    if (!this.editFlag){
+      this.contentChange.emit(this.content);
+    }
   }
 }

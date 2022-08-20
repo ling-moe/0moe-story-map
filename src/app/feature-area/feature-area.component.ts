@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Issue } from '../story-map.type';
+import { Issue, MoveEvent, positionConvert } from '../story-map.type';
 
 @Component({
   selector: 'feature-area',
@@ -11,10 +11,22 @@ import { Issue } from '../story-map.type';
 export class FeatureAreaComponent implements OnInit {
 
   @Input()
+  row!: number;
+
+  @Input()
+  col!: number;
+
+  @Input()
   featureList!: Issue[];
 
   @Output()
   issueCreate = new EventEmitter<Issue>();
+
+  @Output()
+  issueModify = new EventEmitter<{ issue: Issue, index: number }>();
+
+  @Output()
+  issueMove = new EventEmitter<MoveEvent>();
 
   constructor() { }
 
@@ -22,6 +34,7 @@ export class FeatureAreaComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<Issue[]>) {
+    console.log(event)
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -36,10 +49,27 @@ export class FeatureAreaComponent implements OnInit {
         event.currentIndex
       );
     }
+    this.issueMove.emit({
+      source: {
+        ...positionConvert(event.previousContainer.id),
+        index: event.previousIndex
+      },
+      target: {
+        ...positionConvert(event.container.id),
+        index: event.currentIndex
+      },
+      issue: event.container.data[event.currentIndex]
+    });
   }
 
-  addIssue(type: 'STORY' | 'FEATURE' | 'TASK', content: string){
-    this.featureList.push({type, content});
+  addIssue(type: 'STORY' | 'FEATURE' | 'TASK', content: string) {
+    const issue = { type, content };
+    this.featureList.push(issue);
+    this.issueCreate.emit(issue)
+  }
+
+  onIssueModify(issue: Issue, index: number) {
+    this.issueModify.emit({ issue, index });
   }
 
 }

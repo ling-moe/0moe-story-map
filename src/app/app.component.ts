@@ -1,23 +1,7 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { Doc, Array } from 'yjs';
+import { Component, OnInit } from '@angular/core';
+import { Doc, Array, Map } from 'yjs';
 import { WebrtcProvider } from 'y-webrtc';
-import { YArray } from 'yjs/dist/src/internals';
-import {
-  CdkDragDrop,
-  DragRef,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
-import { FunctionArea, Issue, StoryMap } from './story-map.type';
-import { FeatureCardComponent } from './feature-card/feature-card.component';
-import { MatTableDataSource } from '@angular/material/table';
-
-function b64Encode(str: string) {
-  return btoa(encodeURIComponent(str));
-}
-function b64Decode(str: string) {
-  return decodeURIComponent(atob(str));
-}
+import { FEATURE_LIST, MODULE_LIST, Issue, MoveEvent, NAME, StoryMap, VERSION_LIST, positionConvert } from './story-map.type';
 
 @Component({
   selector: 'app-root',
@@ -26,22 +10,40 @@ function b64Decode(str: string) {
 })
 export class AppComponent implements OnInit {
 
-  dataSource!: MatTableDataSource<FunctionArea>;
-
   storyMap: StoryMap = {
     name: '故事地图',
-    functionColList: ['登陆模块', '订单模块', '消息模块', '订单模块', '消息模块'],
-    versionRowList: ['未定义', 'v1.0', 'v1.1'],
-    featureList: [
-      [
-        [{ content: '于如何使用CSS让Icon图标和文本能够垂直对齐，我想大家脑海中第一浮现的属性是著作权归作者所有', type: 'STORY' },
-        { content: '九转大肠', type: 'STORY' },
-        { content: '焦溜丸子', type: 'STORY' },{ content: '九转大肠', type: 'STORY' },
-        { content: '焦溜丸子', type: 'STORY' },]
-      ],
-      [[{ content: '北京烤鸭', type: 'STORY' }]],
-    ],
+    moduleList: [],
+    versionList: [],
+    featureList: [],
   };
+
+  yDoc = new Doc();
+  yMap = this.yDoc.getMap<any>("storyMap");
+
+  conn!: WebrtcProvider;
+
+  ngOnInit(): void {
+    // @ts-ignore
+    this.conn = new WebrtcProvider('your-room-name', this.yDoc, { signaling: ['ws://192.168.1.12:4444'] });
+    this.initYDoc();
+
+    this.yMap.observeDeep(event => {
+      const source = this.yMap.toJSON() as any;
+      source.moduleList = source.moduleList?.map((_: any) => _.name);
+      source.versionList = source.versionList?.map((_: any) => _.name);
+      const temp = source.featureList;
+      source.featureList = [];
+      Object.keys(temp).forEach(key => {
+        const {row, col} =  positionConvert(key);
+        if(!source.featureList[row]){
+          source.featureList[row] = [];
+        }
+        source.featureList[row][col] = temp[key];
+      })
+      this.storyMap = source as StoryMap;
+      console.log(this.storyMap);
+    });
+  }
 
   getfeatureList(row: number, col: number): Issue[] {
     if (!this.storyMap.featureList[row]) {
@@ -53,114 +55,73 @@ export class AppComponent implements OnInit {
     return this.storyMap.featureList[row][col];
   }
 
-  getFeatureRowSpan(row: number): number{
-    let rowSpan = Math.max(...(this.storyMap.featureList[row]? this.storyMap.featureList[row] : [[]]).map(col => col.length));
-    rowSpan = rowSpan > 0 ? rowSpan + 4 : 6;
-    return rowSpan;
+  addIssue(issue: Issue, row: number, col: number): void {
+    this.yMap.get(FEATURE_LIST)?.get(row + '-' + col).push([issue]);
   }
 
-  addIssue(issue: Issue, row: number, col: number): void {
-    this.storyMap.featureList[row][col].push(issue);
+  modifyIssue(wrap: {issue: Issue, index: number}, row: number, col: number): void {
+    this.yMap.get(FEATURE_LIST)?.get(row + '-' + col).get(wrap.index).push([wrap.issue]);
   }
 
   addVersion(version: string){
-    this.storyMap.versionRowList.push(version);
+    const vObj = new Map();
+    vObj.set('name', version);
+    this.yMap.get(VERSION_LIST)?.push([vObj]);
   }
 
-  addFunction(version: string){
-    this.storyMap.functionColList.push(version);
+  addModule(func: string){
+    const fObj = new Map();
+    fObj.set('name', func);
+    this.yMap.get(MODULE_LIST)?.push([fObj]);
   }
 
-  address!: string;
-  answer!: RTCPeerConnection;
-  question!: RTCPeerConnection;
-  yarray!: YArray<number>;
-
-  ngOnInit(): void {
-    // const ydoc = new Doc()
-    // // clients connected to the same room-name share document updates
-    // // @ts-ignore
-    // const provider = new WebrtcProvider('your-room-name', ydoc, { signaling: ['ws://192.168.1.4:4444'] });
-    // this.yarray = ydoc.getArray('array')
-    // // observe changes of the sum
-    // this.yarray.observe(event => {
-    //   // print updates when the data changes
-    //   console.log('new sum: ' + this.yarray.toArray().reduce((a,b) => a + b))
-    // })
+  modifyName(name: string){
+    this.yMap.set(NAME, name);
   }
 
-
-
-  add() {
-    // add 1 to the sum
-    this.yarray.push([1]); // => "new sum: 1"
+  modifyModule(func: string, index: number){
+    this.yMap.get(MODULE_LIST).get(index).set('name', func);
   }
 
-  createPeerConnection() {
-    const question = new RTCPeerConnection();
-    question.onicecandidate = (e) => {
-      let message = { type: 'candidate' };
-      if (e.candidate) {
-        let message = {
-          type: 'candidate',
-          candidate: e.candidate.candidate,
-          sdpMid: e.candidate.sdpMid,
-          sdpMLineIndex: e.candidate.sdpMLineIndex,
-        };
-      }
-      console.log(b64Encode(JSON.stringify(message)));
-    };
-    return question;
+  modifyVersion(func: string, index: number){
+    this.yMap.get(VERSION_LIST).get(index).set('name', func);
   }
 
-  async makeCall() {
-    this.createPeerConnection();
-    const offer = await this.question.createOffer();
-    console.log(b64Encode(JSON.stringify({ type: 'offer', sdp: offer.sdp })));
-    await this.question.setLocalDescription(offer);
-  }
-
-  async handleOffer(offer: RTCSessionDescriptionInit) {
-    if (this.question) {
-      console.error('existing peerconnection');
-      return;
+  moveIssue(moveEvent: MoveEvent){
+    const {source, target, issue} = moveEvent;
+    this.yMap.get(FEATURE_LIST)?.get(source.row + '-' + source.col).delete(source.index);
+    if(!this.yMap.get(FEATURE_LIST)?.has(target.row + '-' + target.col)){
+      this.yMap.get(FEATURE_LIST).set(target.row + '-' + target.col, new Array());
     }
-    this.question = this.createPeerConnection();
-    this.question.setRemoteDescription(offer);
-
-    const answer = await this.question.createAnswer();
-    console.log(b64Encode(JSON.stringify({ type: 'answer', sdp: answer.sdp })));
-    await this.question.setLocalDescription(answer);
+    this.yMap.get(FEATURE_LIST)?.get(target.row + '-' + target.col).insert(target.index, [issue]);
   }
 
-  async handleAnswer(answer: RTCSessionDescriptionInit) {
-    if (!this.question) {
-      console.error('no peerconnection');
-      return;
-    }
-    this.question.setRemoteDescription(answer);
-  }
+  initYDoc(){
+    const func = new Map();
+    func.set('name', '示例模块');
+    const functionColList = new Array();
+    functionColList.push([func]);
 
-  async handleCandidate(candidate: RTCIceCandidateInit) {
-    if (!this.question) {
-      console.error('no peerconnection');
-      return;
-    }
-    if (candidate.candidate) {
-      await this.question.addIceCandidate(candidate);
-    }
-  }
+    const version = new Map();
+    version.set('name', '未定义');
+    const versionRowList = new Array();
+    versionRowList.push([version]);
 
+    const feature = new Map();
+    feature.set('content', '示例故事');
+    feature.set('type', 'STORY');
+    const featureArea = new Array();
+    // console.log(feature);
+
+    featureArea.push([feature]);
+
+    const position = new Map();
+    position.set(0 + '-' + 0, featureArea)
+
+    this.yMap.set(NAME, '故事地图');
+    this.yMap.set(MODULE_LIST, functionColList);
+    this.yMap.set(VERSION_LIST, versionRowList);
+    this.yMap.set(FEATURE_LIST, position);
+  }
   title = 'story-map';
 }
-
-// async function hangup() {
-//   if (pc) {
-//     pc.close();
-//     pc = null;
-//   }
-//   localStream.getTracks().forEach(track => track.stop());
-//   localStream = null;
-//   startButton.disabled = false;
-//   hangupButton.disabled = true;
-// };

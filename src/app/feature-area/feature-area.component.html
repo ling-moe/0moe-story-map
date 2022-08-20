@@ -1,10 +1,11 @@
   <div
     cdkDropList
+    [id]="row + '-' + col"
     [cdkDropListData]="featureList"
     class="example-list"
     (cdkDropListDropped)="drop($event)"
     style="min-height: 200px;">
-    <feature-card [content]="item.content" [type]="item.type" *ngFor="let item of featureList" cdkDrag>{{item}}</feature-card>
+    <feature-card [content]="item.content" [type]="item.type" *ngFor="let item of featureList;let i = index" (issueModify)="onIssueModify($event, i)" cdkDrag>{{item}}</feature-card>
   </div>
   <div style="display: flex;">
   <mat-form-field appearance="fill" style="width: 60px;">

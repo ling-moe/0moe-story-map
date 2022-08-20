@@ -15,7 +15,7 @@
 <mat-form-field appearance="fill">
   <mat-label>添加版本</mat-label>
   <input matInput type="text" #version>
-  <button  matSuffix mat-icon-button aria-label="Clear" (click)="addVersion(version.value)">
+  <button matSuffix mat-icon-button aria-label="Clear" (click)="addVersion(version.value)">
     <mat-icon>done</mat-icon>
   </button>
 </mat-form-field>
@@ -23,25 +23,31 @@
 <mat-form-field appearance="fill">
   <mat-label>添加功能</mat-label>
   <input matInput type="text" #function>
-  <button  matSuffix mat-icon-button aria-label="Clear" (click)="addFunction(function.value)">
+  <button  matSuffix mat-icon-button aria-label="Clear" (click)="addModule(function.value)">
     <mat-icon>done</mat-icon>
   </button>
 </mat-form-field>
 <div style="height: 100%" cdkDropListGroup>
     <div style="display: flex;">
       <div class="stand-width">
-        <inline-edit [content]="storyMap.name"></inline-edit>
+        <inline-edit [content]="storyMap.name" (contentChange)="modifyName($event)"></inline-edit>
       </div>
-      <div class="stand-width" *ngFor="let functionCol of storyMap.functionColList">
-        <inline-edit [content]="functionCol"></inline-edit>
+      <div class="stand-width" *ngFor="let functionCol of storyMap.moduleList; let i = index">
+        <inline-edit [content]="functionCol" (contentChange)="modifyModule($event, i)"></inline-edit>
       </div>
     </div>
-    <div style="display: flex;" *ngFor="let versionRow of storyMap.versionRowList; let row = index">
+    <div style="display: flex;" *ngFor="let versionRow of storyMap.versionList; let row = index">
       <div class="stand-width" >
-        <inline-edit style="margin: auto 0;" [content]="versionRow"></inline-edit>
+        <inline-edit style="margin: auto 0;" [content]="versionRow" (contentChange)="modifyVersion($event, row)"></inline-edit>
       </div>
-      <div class="stand-width" [style.background]="'#eeeeee'" *ngFor="let feature of storyMap.functionColList; let col = index">
-        <feature-area [featureList]="getfeatureList(row, col)" (issueCreate)="addIssue($event, row, col)" ></feature-area>
+      <div class="stand-width" *ngFor="let feature of storyMap.moduleList; let col = index">
+        <feature-area
+        [row]="row"
+        [col]="col"
+        [featureList]="getfeatureList(row, col)"
+        (issueCreate)="addIssue($event, row, col)"
+        (issueModify)="modifyIssue($event, row, col)"
+        (issueMove)="moveIssue($event)"></feature-area>
       </div>
     </div>
 </div>
