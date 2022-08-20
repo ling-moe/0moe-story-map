@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Doc, Array, Map } from 'yjs';
 import { WebrtcProvider } from 'y-webrtc';
 import { FEATURE_LIST, MODULE_LIST, Issue, MoveEvent, NAME, StoryMap, VERSION_LIST, positionConvert } from './story-map.type';
+import { nanoid } from 'nanoid';
+import { faker } from '@faker-js/faker';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-root',
@@ -17,32 +20,58 @@ export class AppComponent implements OnInit {
     featureList: [],
   };
 
+  roomNum = nanoid();
+  room = this.generateRoomNum();
+
+  nickName!: string;
+
   yDoc = new Doc();
   yMap = this.yDoc.getMap<any>("storyMap");
 
   conn!: WebrtcProvider;
 
+  constructor(private clipboard: Clipboard) { }
+
   ngOnInit(): void {
+    if (!this.nickName) {
+      this.nickName = faker.name.firstName();
+    }
+
     // @ts-ignore
-    this.conn = new WebrtcProvider('your-room-name', this.yDoc, { signaling: ['ws://192.168.1.12:4444'] });
+    this.conn = new WebrtcProvider(this.roomNum, this.yDoc, { signaling: ['ws://192.168.1.12:4444'] });
     this.initYDoc();
 
-    this.yMap.observeDeep(event => {
-      const source = this.yMap.toJSON() as any;
-      source.moduleList = source.moduleList?.map((_: any) => _.name);
-      source.versionList = source.versionList?.map((_: any) => _.name);
-      const temp = source.featureList;
-      source.featureList = [];
-      Object.keys(temp).forEach(key => {
-        const {row, col} =  positionConvert(key);
-        if(!source.featureList[row]){
-          source.featureList[row] = [];
-        }
-        source.featureList[row][col] = temp[key];
-      })
-      this.storyMap = source as StoryMap;
-      console.log(this.storyMap);
-    });
+    this.yMap.observeDeep(event => this.yToStoryMap());
+  }
+
+  yToStoryMap(){
+    const source = this.yMap.toJSON() as any;
+    source.moduleList = source.moduleList?.map((_: any) => _.name);
+    source.versionList = source.versionList?.map((_: any) => _.name);
+    const temp = source.featureList;
+    source.featureList = [];
+    Object.keys(temp).forEach(key => {
+      const { row, col } = positionConvert(key);
+      if (!source.featureList[row]) {
+        source.featureList[row] = [];
+      }
+      source.featureList[row][col] = temp[key];
+    })
+    this.storyMap = source as StoryMap;
+    console.log(this.storyMap);
+  }
+
+  generateRoomNum(): string {
+    if (window.location.pathname === '/') {
+      history.replaceState({ page: 1 }, 'title 1', '/' + this.roomNum)
+    } else {
+      this.roomNum = window.location.pathname.substring(1, window.location.pathname.length);
+    }
+    return window.location.protocol + '//' + window.location.host + '/' + this.roomNum;
+  }
+
+  copy() {
+    this.clipboard.copy(this.room);
   }
 
   getfeatureList(row: number, col: number): Issue[] {
@@ -59,44 +88,44 @@ export class AppComponent implements OnInit {
     this.yMap.get(FEATURE_LIST)?.get(row + '-' + col).push([issue]);
   }
 
-  modifyIssue(wrap: {issue: Issue, index: number}, row: number, col: number): void {
+  modifyIssue(wrap: { issue: Issue, index: number }, row: number, col: number): void {
     this.yMap.get(FEATURE_LIST)?.get(row + '-' + col).get(wrap.index).push([wrap.issue]);
   }
 
-  addVersion(version: string){
+  addVersion(version: string) {
     const vObj = new Map();
     vObj.set('name', version);
     this.yMap.get(VERSION_LIST)?.push([vObj]);
   }
 
-  addModule(func: string){
+  addModule(func: string) {
     const fObj = new Map();
     fObj.set('name', func);
     this.yMap.get(MODULE_LIST)?.push([fObj]);
   }
 
-  modifyName(name: string){
+  modifyName(name: string) {
     this.yMap.set(NAME, name);
   }
 
-  modifyModule(func: string, index: number){
+  modifyModule(func: string, index: number) {
     this.yMap.get(MODULE_LIST).get(index).set('name', func);
   }
 
-  modifyVersion(func: string, index: number){
+  modifyVersion(func: string, index: number) {
     this.yMap.get(VERSION_LIST).get(index).set('name', func);
   }
 
-  moveIssue(moveEvent: MoveEvent){
-    const {source, target, issue} = moveEvent;
+  moveIssue(moveEvent: MoveEvent) {
+    const { source, target, issue } = moveEvent;
     this.yMap.get(FEATURE_LIST)?.get(source.row + '-' + source.col).delete(source.index);
-    if(!this.yMap.get(FEATURE_LIST)?.has(target.row + '-' + target.col)){
+    if (!this.yMap.get(FEATURE_LIST)?.has(target.row + '-' + target.col)) {
       this.yMap.get(FEATURE_LIST).set(target.row + '-' + target.col, new Array());
     }
     this.yMap.get(FEATURE_LIST)?.get(target.row + '-' + target.col).insert(target.index, [issue]);
   }
 
-  initYDoc(){
+  initYDoc() {
     const func = new Map();
     func.set('name', '示例模块');
     const functionColList = new Array();
@@ -122,6 +151,8 @@ export class AppComponent implements OnInit {
     this.yMap.set(MODULE_LIST, functionColList);
     this.yMap.set(VERSION_LIST, versionRowList);
     this.yMap.set(FEATURE_LIST, position);
+
+    this.yToStoryMap();
   }
   title = 'story-map';
 }

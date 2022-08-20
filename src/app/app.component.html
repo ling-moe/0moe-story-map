@@ -1,17 +1,3 @@
-<!-- <button (click)="create()">创建地址</button> -->
-<!-- <br>
-<input type="text" [(ngModel)]="address">
-<button (click)="add()">+1</button> -->
-<!-- <button (click)="conn()">连接远程地址</button> -->
-
-<!-- <div
-  cdkDropList
-  cdkDrag
-  [cdkDropListData]="timePeriods"
-  class="example-list"
-  (cdkDropListDropped)="drop($event)">
-  <div class="example-box" [cdkDragData]="item" *ngFor="let item of timePeriods" cdkDrag>{{item}}</div>
-</div> -->
 <mat-form-field appearance="fill">
   <mat-label>添加版本</mat-label>
   <input matInput type="text" #version>
@@ -19,13 +5,25 @@
     <mat-icon>done</mat-icon>
   </button>
 </mat-form-field>
-<br>
+
 <mat-form-field appearance="fill">
   <mat-label>添加功能</mat-label>
   <input matInput type="text" #function>
   <button  matSuffix mat-icon-button aria-label="Clear" (click)="addModule(function.value)">
     <mat-icon>done</mat-icon>
   </button>
+</mat-form-field>
+<br>
+<mat-form-field appearance="fill">
+  <mat-label>复制链接</mat-label>
+  <input matInput type="text" [(ngModel)]="room" disabled="true">
+  <button  matSuffix mat-icon-button aria-label="Clear" (click)="copy()">
+    <mat-icon>content_copy</mat-icon>
+  </button>
+</mat-form-field>
+<mat-form-field appearance="fill">
+  <mat-label>昵称</mat-label>
+  <input matInput type="text" [(ngModel)]="nickName">
 </mat-form-field>
 <div style="height: 100%" cdkDropListGroup>
     <div style="display: flex;">
