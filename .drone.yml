@@ -26,11 +26,10 @@ steps:
     pull: if-not-exists
     image: plugins/docker
     settings:
-      debug: true
-      username: '571863559@qq.com'
-      password: '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'
-      registry: 'ghcr.io'
-      repo: 'ghcr.io/dawnsouther/0moe-story-map'
+      username: 571863559@qq.com
+      password: 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
+      registry: ghcr.io
+      repo: ghcr.io/dawnsouther/0moe-story-map
       tags:
         - latest
         - ${DRONE_COMMIT_SHA}
