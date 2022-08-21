@@ -20,7 +20,7 @@ steps:
     image: node
     commands:
       - npm install
-      - npm build --prod
+      - npm run build
   # 1.打成docker
   - name: docker
     pull: if-not-exists
