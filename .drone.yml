@@ -15,8 +15,6 @@ volumes:
 
 # drone构建步骤
 steps:
-  - name: git-clone
-    image: plugins/git
   - name: node
     pull: if-not-exists
     image: node
