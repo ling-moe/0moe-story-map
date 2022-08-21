@@ -22,7 +22,7 @@ steps:
       - npm install
       - npm build --prod
   # 1.打成docker
-  - name: docker-build
+  - name: docker
     pull: if-not-exists
     image: plugins/docker
     settings:
@@ -35,7 +35,7 @@ steps:
         - ${DRONE_COMMIT_SHA}
       dockerfile: docker/Dockerfile
   # 3.邮件通知
-  - name: email-notice
+  - name: notice
     pull: if-not-exists
     image: drillster/drone-email
     settings:
