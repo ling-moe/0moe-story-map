@@ -17,7 +17,7 @@ volumes:
 steps:
   - name: node
     pull: if-not-exists
-    image: node:16
+    image: node
     commands:
       - npm install
       - npm build --prod
