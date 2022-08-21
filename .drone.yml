@@ -20,7 +20,7 @@ steps:
   - name: clone
     image: alpine/git
     commands:
-    - git clone https://github.com/ling-moe/0moe-story-map.git .
+    - git clone https://github.com/ling-moe/0moe-story-map.git
     - git checkout $DRONE_COMMIT
   - name: node
     pull: if-not-exists
