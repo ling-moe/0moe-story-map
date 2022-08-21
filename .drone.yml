@@ -26,6 +26,7 @@ steps:
     pull: if-not-exists
     image: plugins/docker
     settings:
+      insecure: true
       username: '571863559@qq.com'
       password: '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'
       registry: 'ghcr.io'
