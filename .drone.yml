@@ -12,9 +12,16 @@ volumes:
   - name: cache
     host:
       path: /root
+clone:
+  disable: true
 
 # drone构建步骤
 steps:
+  - name: clone
+    image: alpine/git
+    commands:
+    - git clone https://github.com/ling-moe/0moe-story-map.git .
+    - git checkout $DRONE_COMMIT
   - name: node
     pull: if-not-exists
     image: node
