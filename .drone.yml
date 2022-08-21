@@ -3,16 +3,6 @@ kind: pipeline
 type: docker
 name: story-map
 
-# drone执行触发器
-trigger:
-  branch:
-    - main
-
-volumes:
-  - name: cache
-    host:
-      path: /root
-
 # drone构建步骤
 steps:
   - name: node
