@@ -20,13 +20,13 @@ export class AppComponent implements OnInit {
     featureList: [],
   };
 
+  yDoc = new Doc();
+  yMap = this.yDoc.getMap<any>("storyMap");
+
   roomNum = nanoid();
   room = this.generateRoomNum();
 
   nickName!: string;
-
-  yDoc = new Doc();
-  yMap = this.yDoc.getMap<any>("storyMap");
 
   conn!: WebrtcProvider;
 
@@ -36,10 +36,8 @@ export class AppComponent implements OnInit {
     if (!this.nickName) {
       this.nickName = faker.name.firstName();
     }
-
     // @ts-ignore
-    this.conn = new WebrtcProvider(this.roomNum, this.yDoc, { signaling: ['ws://192.168.1.12:4444'] });
-    this.initYDoc();
+    this.conn = new WebrtcProvider(this.roomNum, this.yDoc, { signaling: ['wss://signaling.yjs.dev'] });
 
     this.yMap.observeDeep(event => this.yToStoryMap());
   }
@@ -63,7 +61,8 @@ export class AppComponent implements OnInit {
 
   generateRoomNum(): string {
     if (window.location.pathname === '/') {
-      history.replaceState({ page: 1 }, 'title 1', '/' + this.roomNum)
+      history.replaceState({ page: 1 }, 'title 1', '/' + this.roomNum);
+      this.initYDoc();
     } else {
       this.roomNum = window.location.pathname.substring(1, window.location.pathname.length);
     }

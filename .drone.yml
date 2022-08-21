@@ -1,0 +1,61 @@
+# drone 本地构建
+kind: pipeline
+type: docker
+name: note-deploy
+
+# drone执行触发器
+trigger:
+  branch:
+    - main
+
+volumes:
+  - name: cache
+    host:
+      path: /root
+
+# drone构建步骤
+steps:
+  - name: node
+    pull: if-not-exists
+    image: node:16
+    commands:
+      - npm install
+      - npm build --prod
+  # 1.打成docker
+  - name: docker-build
+    pull: if-not-exists
+    image: plugins/docker
+    settings:
+      username: 571863559@qq.com
+      password: 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
+      registry: ghcr.io
+      repo: ghcr.io/ling-moe/0moe-story-map
+      tags:
+        - latest
+        - ${DRONE_COMMIT_SHA}
+      dockerfile: docker/Dockerfile
+  # 2.部署到docker
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host: 122.51.158.110
+      username: root
+      port: 22
+      password:
+        from_secret: ssh_pwd
+      script:
+        - cd /root
+        - sed 's/{{ build.commit }}/${DRONE_COMMIT_SHA}/g' note-template.yml > note.yml
+        - kubectl apply -f note.yml
+  # 3.邮件通知
+  - name: email-notice
+    pull: if-not-exists
+    image: drillster/drone-email
+    settings:
+      host: smtp.exmail.qq.com
+      port: 465
+      username: system@0moe.cn
+      password: MjEcKARP3qAECSMS
+      from: system@0moe.cn
+    when:
+      status: [failure, success]
