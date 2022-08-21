@@ -1,7 +1,7 @@
 # drone 本地构建
 kind: pipeline
 type: docker
-name: note-deploy
+name: story-map
 
 # drone执行触发器
 trigger:
