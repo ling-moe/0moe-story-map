@@ -27,7 +27,7 @@ steps:
     image: plugins/docker
     settings:
       username: 571863559@qq.com
-      password: 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
+      password: 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
       registry: ghcr.io
       repo: ghcr.io/ling-moe/0moe-story-map
       tags:
