@@ -15,12 +15,12 @@ volumes:
 
 # drone构建步骤
 steps:
-  # - name: node
-  #   pull: if-not-exists
-  #   image: node
-  #   commands:
-  #     - npm install
-  #     - npm run build
+  - name: node
+    pull: if-not-exists
+    image: node
+    commands:
+      - npm install
+      - npm run build
   # 1.打成docker
   - name: docker
     pull: if-not-exists
@@ -36,14 +36,14 @@ steps:
         - ${DRONE_COMMIT_SHA}
       dockerfile: docker/Dockerfile
   # 3.邮件通知
-  # - name: notice
-  #   pull: if-not-exists
-  #   image: drillster/drone-email
-  #   settings:
-  #     host: smtp.exmail.qq.com
-  #     port: 465
-  #     username: system@0moe.cn
-  #     password: MjEcKARP3qAECSMS
-  #     from: system@0moe.cn
-  #   when:
-  #     status: [failure, success]
+  - name: notice
+    pull: if-not-exists
+    image: drillster/drone-email
+    settings:
+      host: smtp.exmail.qq.com
+      port: 465
+      username: system@0moe.cn
+      password: MjEcKARP3qAECSMS
+      from: system@0moe.cn
+    when:
+      status: [failure, success]
