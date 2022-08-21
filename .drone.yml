@@ -34,19 +34,6 @@ steps:
         - latest
         - ${DRONE_COMMIT_SHA}
       dockerfile: docker/Dockerfile
-  # 2.部署到docker
-  - name: deploy
-    image: appleboy/drone-ssh
-    settings:
-      host: 122.51.158.110
-      username: root
-      port: 22
-      password:
-        from_secret: ssh_pwd
-      script:
-        - cd /root
-        - sed 's/{{ build.commit }}/${DRONE_COMMIT_SHA}/g' note-template.yml > note.yml
-        - kubectl apply -f note.yml
   # 3.邮件通知
   - name: email-notice
     pull: if-not-exists
