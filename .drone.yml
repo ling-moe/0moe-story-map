@@ -35,6 +35,17 @@ steps:
         - latest
         - ${DRONE_COMMIT_SHA}
       dockerfile: docker/Dockerfile
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host: 122.51.158.110
+      username: root
+      port: 22
+      password:
+        from_secret: SSH_PWD
+      script:
+        - cd /0moe
+        - docker-compose up -d story-map
   # 3.邮件通知
   - name: notice
     pull: if-not-exists
