@@ -3,7 +3,6 @@ import { Doc, Array, Map } from 'yjs';
 import { WebrtcProvider } from 'y-webrtc';
 import { FEATURE_LIST, MODULE_LIST, Issue, MoveEvent, NAME, StoryMap, VERSION_LIST, positionConvert } from './story-map.type';
 import { nanoid } from 'nanoid';
-import { faker } from '@faker-js/faker';
 import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
@@ -34,7 +33,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.nickName) {
-      this.nickName = faker.name.firstName();
+      this.nickName = nanoid();
     }
     // @ts-ignore
     this.conn = new WebrtcProvider(this.roomNum, this.yDoc, { signaling: ['wss://signaling.yjs.dev'] });
