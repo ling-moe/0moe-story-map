@@ -55,8 +55,8 @@ steps:
     settings:
       host: smtp.exmail.qq.com
       port: 465
-      username: system@0moe.cn
+      username: 571863559@qq.com
       password: mETzDhvSGTtdQD8j
-      from: 571863559@qq.com
+      from: system@0moe.cn
     when:
       status: [failure, success]
