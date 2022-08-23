@@ -47,6 +47,7 @@ steps:
         - cd /0moe
         - docker-compose pull story-map
         - docker-compose up -d story-map
+        - echo "Deploy Success!"
   # 3.邮件通知
   - name: notice
     pull: if-not-exists
