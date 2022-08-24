@@ -37,7 +37,8 @@ export class AppComponent implements OnInit {
     }
     // @ts-ignore
     this.conn = new WebrtcProvider(this.roomNum, this.yDoc, { signaling: ['wss://signaling.yjs.dev'] });
-
+    // @ts-ignore
+    window.webRtcProvider = this.conn;
     this.yMap.observeDeep(event => this.yToStoryMap());
   }
 
