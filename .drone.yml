@@ -58,5 +58,8 @@ steps:
       username: system@0moe.cn
       password: mETzDhvSGTtdQD8j
       from: system@0moe.cn
+      recipients_only: true
+      recipients:
+       - 571863559@qq.com
     when:
       status: [failure, success]
