@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
       this.nickName = nanoid();
     }
     // @ts-ignore
-    this.conn = new WebrtcProvider(this.roomNum, this.yDoc, { signaling: ['wss://signaling.yjs.dev'] });
+    this.conn = new WebrtcProvider(this.roomNum, this.yDoc, { signaling: ['wss://signaling.yjs.dev'], peerOpts: {config: { iceServers: [{ urls: 'turn:122.51.158.110:3478' }, { urls: 'stun:stun.l.google.com:19302' }] },}});
     // @ts-ignore
     window.webRtcProvider = this.conn;
     this.yMap.observeDeep(event => this.yToStoryMap());
