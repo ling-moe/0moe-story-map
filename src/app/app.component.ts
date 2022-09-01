@@ -4,6 +4,7 @@ import { WebrtcProvider } from 'y-webrtc';
 import { FEATURE_LIST, MODULE_LIST, Issue, MoveEvent, NAME, StoryMap, VERSION_LIST, positionConvert } from './story-map.type';
 import { nanoid } from 'nanoid';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { WebsocketProvider } from 'y-websocket';
 
 @Component({
   selector: 'app-root',
@@ -35,10 +36,16 @@ export class AppComponent implements OnInit {
     if (!this.nickName) {
       this.nickName = nanoid();
     }
-    // @ts-ignore
-    this.conn = new WebrtcProvider(this.roomNum, this.yDoc, { signaling: ['wss://signaling.yjs.dev'], peerOpts: {config: { iceServers: [{ urls: 'turn:122.51.158.110:3478' }, { urls: 'stun:stun.l.google.com:19302' }] },}});
-    // @ts-ignore
-    window.webRtcProvider = this.conn;
+    // // @ts-ignore
+    // this.conn = new WebrtcProvider(this.roomNum, this.yDoc, { signaling: ['wss://signaling.yjs.dev'], peerOpts: {config: { iceServers: [{ urls: 'turn:122.51.158.110:3478' }, { urls: 'stun:stun.l.google.com:19302' }] },}});
+    // // @ts-ignore
+    // window.webRtcProvider = this.conn;
+
+    const wsProvider = new WebsocketProvider('wss://story-map.0moe.cn/server', this.roomNum, this.yDoc)
+
+    wsProvider.on('status', (event: { status: any; }) => {
+      console.log(event.status) // logs "connected" or "disconnected"
+    })
     this.yMap.observeDeep(event => this.yToStoryMap());
   }
 
