@@ -69,7 +69,7 @@ steps:
       host: smtp.exmail.qq.com
       port: 465
       username: system@0moe.cn
-      password: mETzDhvSGTtdQD8j
+      password: 7jtFDPkTmnDbbEQA
       from: system@0moe.cn
       recipients_only: true
       recipients:
