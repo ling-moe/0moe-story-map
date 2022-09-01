@@ -1,0 +1,14 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "y-websocket"
+  },
+  "dependencies": {
+    "y-websocket": "^1.4.4"
+  },
+  "author": "",
+  "license": "ISC"
+}

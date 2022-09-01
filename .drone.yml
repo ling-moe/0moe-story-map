@@ -22,7 +22,7 @@ steps:
       - npm install
       - npm run build
   # 1.打成docker
-  - name: docker
+  - name: forntend-build
     pull: if-not-exists
     image: plugins/docker
     settings:
@@ -34,7 +34,20 @@ steps:
       tags:
         - latest
         - ${DRONE_COMMIT_SHA}
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/frontend/Dockerfile
+  - name: server-build
+    pull: if-not-exists
+    image: plugins/docker
+    settings:
+      username: 571863559@qq.com
+      password:
+        from_secret: DOCKER_PWD
+      registry: ghcr.io
+      repo: ghcr.io/dawnsouther/0moe-story-map-server
+      tags:
+        - latest
+        - ${DRONE_COMMIT_SHA}
+      dockerfile: docker/server/Dockerfile
   - name: deploy
     image: appleboy/drone-ssh
     settings:
@@ -45,8 +58,8 @@ steps:
         from_secret: SSH_PWD
       script:
         - cd /0moe
-        - docker-compose pull story-map
-        - docker-compose up -d story-map
+        - docker-compose pull story-map story-map-server
+        - docker-compose up -d story-map story-map-server
         - echo "Deploy Success!"
   # 3.邮件通知
   - name: notice
