@@ -8,6 +8,7 @@ export interface StoryMap {
 export interface Issue {
   content: string;
   type: 'STORY' | 'FEATURE' | 'TASK';
+  person: string;
 }
 
 export interface FunctionArea {

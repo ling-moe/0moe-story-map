@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Doc, Array, Map } from 'yjs';
-import { WebrtcProvider } from 'y-webrtc';
 import { FEATURE_LIST, MODULE_LIST, Issue, MoveEvent, NAME, StoryMap, VERSION_LIST, positionConvert } from './story-map.type';
 import { nanoid } from 'nanoid';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -20,31 +19,28 @@ export class AppComponent implements OnInit {
     featureList: [],
   };
 
-  yDoc = new Doc();
-  yMap = this.yDoc.getMap<any>("storyMap");
+  yDoc;
+  yMap;
 
-  roomNum = nanoid();
-  room = this.generateRoomNum();
+  nickName: string;
+  roomNum;
+  room;
 
-  nickName!: string;
+  wsProvider!: WebsocketProvider;
 
-  conn!: WebrtcProvider;
-
-  constructor(private clipboard: Clipboard) { }
+  constructor(private clipboard: Clipboard) {
+    this.yDoc = new Doc();
+    this.yMap = this.yDoc.getMap<any>("storyMap");
+    this.nickName = localStorage.getItem('person') ? localStorage.getItem('person')! : 'Jerry';
+    this.roomNum = nanoid();
+    this.room = this.generateRoomNum();
+   }
 
   ngOnInit(): void {
-    if (!this.nickName) {
-      this.nickName = nanoid();
-    }
-    // // @ts-ignore
-    // this.conn = new WebrtcProvider(this.roomNum, this.yDoc, { signaling: ['wss://signaling.yjs.dev'], peerOpts: {config: { iceServers: [{ urls: 'turn:122.51.158.110:3478' }, { urls: 'stun:stun.l.google.com:19302' }] },}});
-    // // @ts-ignore
-    // window.webRtcProvider = this.conn;
-
-    const wsProvider = new WebsocketProvider('wss://story-map.0moe.cn/server', this.roomNum, this.yDoc)
-
-    wsProvider.on('status', (event: { status: any; }) => {
-      console.log(event.status) // logs "connected" or "disconnected"
+    this.wsProvider = new WebsocketProvider('wss://story-map.0moe.cn/server', this.roomNum, this.yDoc)
+    this.wsProvider.on('status', (event: { status: any; }) => {
+      // logs "connected" or "disconnected"
+      console.log(event.status)
     })
     this.yMap.observeDeep(event => this.yToStoryMap());
   }
@@ -63,7 +59,10 @@ export class AppComponent implements OnInit {
       source.featureList[row][col] = temp[key];
     })
     this.storyMap = source as StoryMap;
-    console.log(this.storyMap);
+  }
+
+  saveNickName(nickName: string){
+    localStorage.setItem('person', nickName);
   }
 
   generateRoomNum(): string {
@@ -73,7 +72,7 @@ export class AppComponent implements OnInit {
     } else {
       this.roomNum = window.location.pathname.substring(1, window.location.pathname.length);
     }
-    return window.location.protocol + '//' + window.location.host + '/' + this.roomNum;
+    return `${window.location.protocol}//${window.location.host}/${this.roomNum}`;
   }
 
   copy() {
@@ -91,7 +90,7 @@ export class AppComponent implements OnInit {
   }
 
   addIssue(issue: Issue, row: number, col: number): void {
-    this.yMap.get(FEATURE_LIST)?.get(row + '-' + col).push([issue]);
+    this.getFeatrueGroup(row, col).push([issue]);
   }
 
   modifyIssue(wrap: { issue: Issue, index: number }, row: number, col: number): void {
@@ -125,10 +124,14 @@ export class AppComponent implements OnInit {
   moveIssue(moveEvent: MoveEvent) {
     const { source, target, issue } = moveEvent;
     this.yMap.get(FEATURE_LIST)?.get(source.row + '-' + source.col).delete(source.index);
-    if (!this.yMap.get(FEATURE_LIST)?.has(target.row + '-' + target.col)) {
-      this.yMap.get(FEATURE_LIST).set(target.row + '-' + target.col, new Array());
+    this.getFeatrueGroup(target.row, target.col).insert(target.index, [issue]);
+  }
+
+  getFeatrueGroup(row: number, col: number): Array<unknown>{
+    if (!this.yMap.get(FEATURE_LIST).has(`${row}-${col}`)) {
+      this.yMap.get(FEATURE_LIST).set(`${row}-${col}`, new Array());
     }
-    this.yMap.get(FEATURE_LIST)?.get(target.row + '-' + target.col).insert(target.index, [issue]);
+    return this.yMap.get(FEATURE_LIST).get(`${row}-${col}`);
   }
 
   initYDoc() {
@@ -141,12 +144,12 @@ export class AppComponent implements OnInit {
     version.set('name', '未定义');
     const versionRowList = new Array();
     versionRowList.push([version]);
-
+    console.log(this.nickName);
     const feature = new Map();
     feature.set('content', '示例故事');
     feature.set('type', 'STORY');
+    feature.set('person', this.nickName);
     const featureArea = new Array();
-    // console.log(feature);
 
     featureArea.push([feature]);
 

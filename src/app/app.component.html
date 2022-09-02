@@ -1,30 +1,11 @@
 <mat-form-field appearance="fill">
-  <mat-label>添加版本</mat-label>
-  <input matInput type="text" #version>
-  <button matSuffix mat-icon-button aria-label="Clear" (click)="addVersion(version.value)">
-    <mat-icon>done</mat-icon>
-  </button>
-</mat-form-field>
-
-<mat-form-field appearance="fill">
-  <mat-label>添加功能</mat-label>
-  <input matInput type="text" #function>
-  <button  matSuffix mat-icon-button aria-label="Clear" (click)="addModule(function.value)">
-    <mat-icon>done</mat-icon>
-  </button>
-</mat-form-field>
-<br>
-<mat-form-field appearance="fill">
   <mat-label>复制链接</mat-label>
   <input matInput type="text" [(ngModel)]="room" disabled="true">
   <button  matSuffix mat-icon-button aria-label="Clear" (click)="copy()">
     <mat-icon>content_copy</mat-icon>
   </button>
 </mat-form-field>
-<mat-form-field appearance="fill">
-  <mat-label>昵称</mat-label>
-  <input matInput type="text" [(ngModel)]="nickName">
-</mat-form-field>
+<inline-edit [content]="nickName" (contentChange)="saveNickName($event)"></inline-edit>
 <div style="height: 100%" cdkDropListGroup>
     <div style="display: flex;">
       <div class="stand-width">
@@ -33,6 +14,13 @@
       <div class="stand-width" *ngFor="let functionCol of storyMap.moduleList; let i = index">
         <inline-edit [content]="functionCol" (contentChange)="modifyModule($event, i)"></inline-edit>
       </div>
+      <mat-form-field appearance="fill">
+        <mat-label>添加功能</mat-label>
+        <input matInput type="text" #function>
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="addModule(function.value)">
+          <mat-icon>done</mat-icon>
+        </button>
+      </mat-form-field>
     </div>
     <div style="display: flex;" *ngFor="let versionRow of storyMap.versionList; let row = index">
       <div class="stand-width" >
@@ -48,4 +36,12 @@
         (issueMove)="moveIssue($event)"></feature-area>
       </div>
     </div>
+    <mat-form-field appearance="fill">
+      <mat-label>添加版本</mat-label>
+      <input matInput type="text" #version>
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="addVersion(version.value)">
+        <mat-icon>done</mat-icon>
+      </button>
+    </mat-form-field>
 </div>
+

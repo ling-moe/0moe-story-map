@@ -15,6 +15,7 @@ export class FeatureCardComponent implements OnInit {
   type!: 'STORY' | 'FEATURE' | 'TASK';
   @Input()
   person!: string;
+
   editFlag = false;
 
   @Output()
@@ -27,6 +28,6 @@ export class FeatureCardComponent implements OnInit {
 
   toggle() {
     this.editFlag = !this.editFlag;
-    this.issueModify.emit({content: this.content, type: this.type});
+    this.issueModify.emit({content: this.content, type: this.type, person: this.person});
   }
 }

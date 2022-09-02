@@ -34,7 +34,6 @@ export class FeatureAreaComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<Issue[]>) {
-    console.log(event)
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -63,7 +62,8 @@ export class FeatureAreaComponent implements OnInit {
   }
 
   addIssue(type: 'STORY' | 'FEATURE' | 'TASK', content: string) {
-    const issue = { type, content };
+    const person = (localStorage.getItem('person') ? localStorage.getItem('person')! : 'Tom');
+    const issue = { type, content, person};
     this.featureList.push(issue);
     this.issueCreate.emit(issue)
   }
